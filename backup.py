@@ -1,4 +1,4 @@
-from src import SQLite, StorageClient
+from src import Database, StorageClient
 
-client = SQLite()
+client = Database()
 print("OK")

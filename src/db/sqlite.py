@@ -9,18 +9,32 @@ class SQLite():
         self.db = sqlite.connect(self.get_db_path())
         self.cursor = self.db.cursor()
 
-        self.init()
+        # Check if the database requires configuration
+        try:
+            db_exists = self.query("SELECT k FROM flags WHERE k = 'INIT'")
+            if not db_exists:
+                self.configure_db()
+        except sqlite.OperationalError:
+            self.configure_db()
+    
+    # Strip linebreaks from pretty-printed SQL
+    @staticmethod
+    def format_query(sql: str) -> str: 
+        return " ".join([s.strip() for s in sql.splitlines()])
 
+    # Run SQL query
     def query(self, sql: str):
-        result = self.cursor.execute(sql)
+        query = self.cursor.execute(sql)
+        result = query.fetchall()
 
-        if result.rowcount < 1:
+        if len(result) < 1:
             return False
         
         return result
 
+    # Get path to database file
     def get_db_path(self) -> str:
-        name = ".gcsarchive.db"
+        name = ".cloudbackup.db"
         path = os.getenv("SOURCE_FOLDER")
 
         # Append db file name if absent
@@ -31,17 +45,11 @@ class SQLite():
             path += name
         return path
 
+    # Prepare a fresh db with the expected table structure
     def configure_db(self):
         cwd = str(pathlib.Path(__file__).parent.resolve())
+
         sql = open(cwd + "/config.sql")
-        sql_str = sql.read()
+        sql_str = SQLite.format_query(sql.read())
 
         return self.cursor.executescript(sql_str)
-
-    def init(self):
-        # Set up db if it's fresh
-        hasmeta_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='flags'"
-        if not self.query(hasmeta_sql):
-            self.configure_db()
-
-        return True

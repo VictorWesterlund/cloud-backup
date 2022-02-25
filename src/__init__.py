@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
 from .glob import file_exists
-from .db import SQLite
+from .db import Database
 from .gcs import StorageClient
 
 if not file_exists(".env"):
