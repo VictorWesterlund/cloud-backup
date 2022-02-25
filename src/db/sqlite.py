@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sqlite3 as sqlite
 
 from ..glob import file_exists
@@ -31,12 +32,15 @@ class SQLite():
         return path
 
     def configure_db(self):
-        metadata_sql = "CREATE TABLE metadata (key text, value text)"
-        metadata = self.query(metadata_sql)
+        cwd = str(pathlib.Path(__file__).parent.resolve())
+        sql = open(cwd + "/config.sql")
+        sql_str = sql.read()
+
+        return self.cursor.executescript(sql_str)
 
     def init(self):
         # Set up db if it's fresh
-        hasmeta_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='metadata'"
+        hasmeta_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='flags'"
         if not self.query(hasmeta_sql):
             self.configure_db()
 
