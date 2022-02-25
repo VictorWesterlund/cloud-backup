@@ -13,7 +13,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 public/robots.txt
-
+__pycache__
 
 # OS generated files #
 ######################
@@ -46,5 +46,6 @@ Thumbs.db
 nbproject/*
 # Visual Studio Code
 .vscode
+.theia
 # Sass preprocessor
 .sass-cache/
