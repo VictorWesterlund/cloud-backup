@@ -4,6 +4,8 @@ import sqlite3 as sqlite
 
 from ..glob import file_exists
 
+dbname = ".cloudbackup.db"
+
 class SQLite():
     def __init__(self):
         self.db = sqlite.connect(self.get_db_path())
@@ -34,15 +36,14 @@ class SQLite():
 
     # Get path to database file
     def get_db_path(self) -> str:
-        name = ".cloudbackup.db"
         path = os.getenv("SOURCE_FOLDER")
 
         # Append db file name if absent
-        if not path.endswith(name):
+        if not path.endswith(dbname):
             # Append tailing slash if absent
             if path[-1] != "/":
                 path += "/"
-            path += name
+            path += dbname
         return path
 
     # Prepare a fresh db with the expected table structure

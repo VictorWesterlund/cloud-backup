@@ -4,8 +4,9 @@ class Database(SQLite):
     def __init__(self):
         super().__init__()
 
-    def backup_candidate(self, anchor: str) -> bool:
-        sql = f"SELECT anchor, mtime, chksum FROM manifest WHERE anchor = '{anchor}'"
+    # Test if a candidate item should be backed up
+    def check_item(self, obj: list) -> bool:
+        sql = f"SELECT anchor, mtime, chksum FROM manifest WHERE anchor = '{obj.anchor}'"
         data = self.query(sql)
 
         return True
