@@ -11,20 +11,22 @@ class FileSystem:
     def get_path() -> str:
         return os.getenv("SOURCE_FOLDER")
 
+    # Calculate a CRC32 checksum of provided data
     @staticmethod
     def chksum(data: str) -> str:
-        return zlib.crc32(data)
+        encoded = data.encode("utf-8")
+        return zlib.crc32(encoded)
 
     # Get metadata from candidate file or folder
-    def make_obj(self, anchor: str) -> list:
-        mtime = os.path.getmtime(anchor)
-        if os.path.isdir(anchor):
+    def get_item(self, path: list) -> list:
+        mtime = os.path.getmtime(path)
+        chksum = FileSystem.chksum(path + str(mtime))
 
+        data = [path, mtime, chksum]
+        return data
 
-        data = [anchor, mtime, chksum]
-        return obj
-
+    # Get all second-level files and folders for path
     def all(self) -> list:
-        content = os.listdir(self.path)
-        content = list(map(self.make_obj, content))
+        content = [os.path.join(self.path, f) for f in os.listdir(self.path)]
+        content = list(map(self.get_item, content))
         return content

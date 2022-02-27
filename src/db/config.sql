@@ -11,6 +11,6 @@ CREATE TABLE manifest (
 
 INSERT INTO flags
 VALUES
-    ("CALC_CHECKSUM", 1),
+    ("ZIP", 1),
     ("BUCKET_OK", 0),
     ("INIT", 1);
