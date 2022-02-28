@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
 from .glob import file_exists
-from .db import Database
+from .db import Database, dbname
 from .fs import FileSystem
 from .backup import Backup
 

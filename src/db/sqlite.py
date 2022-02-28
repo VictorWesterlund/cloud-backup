@@ -4,7 +4,7 @@ import sqlite3 as sqlite
 
 from ..glob import file_exists
 
-dbname = ".cloudbackup.db"
+dbname = "._cloudbackup.db"
 
 class SQLite():
     def __init__(self):
@@ -27,8 +27,9 @@ class SQLite():
     # Run SQL query
     def query(self, sql: str):
         query = self.cursor.execute(sql)
-        result = query.fetchall()
+        self.db.commit()
 
+        result = query.fetchall()
         if len(result) < 1:
             return False
         

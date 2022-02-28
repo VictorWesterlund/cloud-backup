@@ -5,8 +5,7 @@ CREATE TABLE flags (
 
 CREATE TABLE manifest (
     anchor TEXT PRIMARY KEY,
-    mtime INTEGER,
-    chksum TEXT
+    chksum INTEGER
 );
 
 INSERT INTO flags
