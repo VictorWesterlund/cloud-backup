@@ -1,7 +1,6 @@
-import os
-import importlib
 from typing import Union
 
+from .cloud import Storage as StorageClient
 from . import Database, FileSystem
 from . import dbname
 
@@ -12,18 +11,9 @@ class Backup(FileSystem):
         self.has_change = False
 
         self.db = Database()
-        self._cloud = None
-        
-        self.cloud = os.getenv("SERVICE")
+        self.cloud = StorageClient()
 
-    @property
-    def cloud(self):
-        return self._cloud
-
-    @cloud.setter
-    def cloud(self, service: str):
-        CloudClient = importlib.import_module("." + service, "Client")
-        self._cloud = CloudClient()
+        self.zip = self.db.get_flag("ZIP")
 
     # Backup a file or folder
     def backup_item(self, item: Union[list, str]) -> bool:
@@ -44,8 +34,13 @@ class Backup(FileSystem):
 
         print(f"Uploading: '{item[0]}' ... ", end="")
 
+        blob = item
+        # Upload as zip archive
+        if self.zip:
+            blob = FileSystem.zip(blob)
+
         # Upload to cloud
-        if self.cloud.upload(item):
+        if self.cloud.upload(blob):
             # Update local database
             if self.db.set_item(item):
                 print("OK")

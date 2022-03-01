@@ -2,8 +2,6 @@ import os
 import pathlib
 import sqlite3 as sqlite
 
-from ..glob import file_exists
-
 dbname = "._cloudbackup.db"
 
 class SQLite():
@@ -13,7 +11,7 @@ class SQLite():
 
         # Check if the database requires configuration
         try:
-            db_exists = self.query("SELECT k FROM flags WHERE k = 'INIT'")
+            db_exists = self.get_flag("INIT")
             if not db_exists:
                 self.configure_db()
         except sqlite.OperationalError:
@@ -55,3 +53,17 @@ class SQLite():
         sql_str = SQLite.format_query(sql.read())
 
         return self.cursor.executescript(sql_str)
+
+        # Get value from flag by key or .env override
+    def get_flag(self, key: str) -> bool:
+        # Return environment variable override
+        envar = os.getenv(key)
+        if envar:
+            return envar
+
+        sql = f"SELECT v FROM flags WHERE k = '{key}'"
+        res = self.query(sql)
+
+        if not res:
+            return False
+        return True

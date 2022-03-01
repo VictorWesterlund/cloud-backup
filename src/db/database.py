@@ -1,3 +1,4 @@
+import os
 from typing import Union
 
 from .sqlite import SQLite
@@ -34,10 +35,10 @@ class Database(SQLite):
     # Check if item should be backed up by comparing mtime and checksum
     def check_item(self, item: Union[list, tuple]) -> bool:
         sql = f"SELECT {self.columns} FROM manifest WHERE anchor = '{item[0]}'"
-        db_item = self.query(sql)[0]
+        db_item = self.query(sql)
 
         # New item or item changed, so back it up
-        if not db_item or (item != db_item):
+        if not db_item or (item != db_item[0]):
             return True
         return False
 
