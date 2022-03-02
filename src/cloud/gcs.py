@@ -11,10 +11,21 @@ class StorageClient:
         client = storage.Client()
         self.bucket = client.bucket(self.get_bucket())
 
+        self._error = None
+
+    @property
+    def error(self):
+        return self._error
+
+    @error.setter
+    def error(self, state):
+        self._error = state
+
     def get_bucket(self):
         return os.getenv("TARGET_BUCKET")
 
     def upload(self, path: str) -> bool:
+        self.error = None
         name = get_file(path)
         blob = self.bucket.blob(name)
 
@@ -22,5 +33,7 @@ class StorageClient:
             with open(path, "rb") as f:
                 blob.upload_from_file(f)
             return True
-        except:
+        except Exception as e:
+            if e.response.status_code == 403:
+                self.error = "Account lacks 'storage.objects.create' permissions on this bucket "
             return False

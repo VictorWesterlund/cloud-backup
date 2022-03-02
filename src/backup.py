@@ -32,7 +32,7 @@ class Backup(FileSystem):
 
         self.has_change = True
 
-        print(f"Uploading: '{item[0]}' ... ", end="")
+        print(f"⧖ | Uploading: '{item[0]}'", end="\r")
 
         blob = item
         # Upload as zip archive
@@ -41,13 +41,15 @@ class Backup(FileSystem):
 
         # Upload to cloud
         if self.cloud.upload(blob):
+            print(f"✓ | Upload sucessful: '{item[0]}'")
             # Update local database
-            if self.db.set_item(item):
-                print("OK")
-            else:
-                print("OK, but failed to update database")
+            if not self.db.set_item(item):
+                print("🛈 | Failed to update database")
         else:
-            print("FAILED")
+            print(f"✕ | Upload failed: '{item[0]}'")
+            if self.cloud.error:
+                print("🛈 | " + str(self.cloud.error))
+
 
         # Remove temp zip
         if self.compress:
@@ -61,4 +63,4 @@ class Backup(FileSystem):
             self.backup_item(item)
         
         if not self.has_change:
-            print("Up to date. No changes found")
+            print("✓ | Up to date. No changes found")

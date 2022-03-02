@@ -1,6 +1,7 @@
 import os
 import pathlib
 import sqlite3 as sqlite
+from typing import Iterable
 
 dbname = "._cloudbackup.db"
 
@@ -23,8 +24,8 @@ class SQLite():
         return " ".join([s.strip() for s in sql.splitlines()])
 
     # Run SQL query
-    def query(self, sql: str):
-        query = self.cursor.execute(sql)
+    def query(self, sql: str, params: Iterable = ()):
+        query = self.cursor.execute(sql, params)
         self.db.commit()
 
         result = query.fetchall()
@@ -61,8 +62,8 @@ class SQLite():
         if envar:
             return envar
 
-        sql = f"SELECT v FROM flags WHERE k = '{key}'"
-        res = self.query(sql)
+        sql = "SELECT v FROM flags WHERE k = ?"
+        res = self.query(sql, [key])
 
         if not res:
             return False
