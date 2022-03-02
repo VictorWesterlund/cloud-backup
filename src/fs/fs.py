@@ -21,6 +21,10 @@ class FileSystem:
         return zlib.crc32(encoded)
 
     @staticmethod
+    def delete(path: str) -> bool:
+        return os.remove(path)
+
+    @staticmethod
     def zip(item) -> str:
         dest = f"{tempfile.gettempdir()}/{str(item[1])}"
 

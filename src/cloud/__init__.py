@@ -6,7 +6,7 @@ import importlib
 class Storage:
     def __init__(self):
         self._service = None
-        self.service = os.getenv("PROVIDER_NAME")
+        self.service = os.getenv("SERVICE_NAME")
 
     @property
     def service(self):
@@ -19,7 +19,7 @@ class Storage:
             service = "gcs"
         module = importlib.import_module("src.cloud." + service)
 
-        self._service = module.StorageClient(os.getenv("TARGET_BUCKET"))
+        self._service = module.StorageClient()
 
     @staticmethod
     def get_args(values):

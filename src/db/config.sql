@@ -10,6 +10,6 @@ CREATE TABLE manifest (
 
 INSERT INTO flags
 VALUES
-    ("ZIP", 1),
+    ("COMPRESS", 1),
     ("BUCKET_OK", 0),
     ("INIT", 1);

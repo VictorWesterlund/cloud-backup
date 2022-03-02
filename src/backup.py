@@ -13,7 +13,7 @@ class Backup(FileSystem):
         self.db = Database()
         self.cloud = StorageClient()
 
-        self.zip = self.db.get_flag("ZIP")
+        self.compress = self.db.get_flag("COMPRESS")
 
     # Backup a file or folder
     def backup_item(self, item: Union[list, str]) -> bool:
@@ -36,7 +36,7 @@ class Backup(FileSystem):
 
         blob = item
         # Upload as zip archive
-        if self.zip:
+        if self.compress:
             blob = FileSystem.zip(blob)
 
         # Upload to cloud
@@ -45,10 +45,13 @@ class Backup(FileSystem):
             if self.db.set_item(item):
                 print("OK")
             else:
-                print("OK, BUT: Failed to update database")
+                print("OK, but failed to update database")
         else:
             print("FAILED")
-        
+
+        # Remove temp zip
+        if self.compress:
+            FileSystem.delete(blob)
         return
 
     # Scan TARGET_FOLDER for files and folders to back up
