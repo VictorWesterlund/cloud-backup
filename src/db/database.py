@@ -28,14 +28,17 @@ class Database(SQLite):
     # Check if item exists in the database
     def item_exists(self, item: Union[list, tuple]) -> bool:
         sql = "SELECT anchor FROM manifest WHERE anchor = ?"
-        res = self.query(sql, (item[0]))
+        res = self.query(sql, (item[0],))
 
         return res
 
     # Check if item should be backed up by comparing mtime and checksum
     def check_item(self, item: Union[list, tuple]) -> bool:
+        if os.getenv("FORCE_UPLOAD"):
+            return True
+
         sql = f"SELECT {self.columns} FROM manifest WHERE anchor = ?"
-        db_item = self.query(sql, (item[0]))
+        db_item = self.query(sql, (item[0],))
 
         # New item or item changed, so back it up
         if not db_item or (item != db_item[0]):
@@ -44,10 +47,12 @@ class Database(SQLite):
 
     # Insert or update item in database
     def set_item(self, item: Union[list, tuple]) -> bool:
+        values = [item[0], item[1], item[0]]
         sql = "UPDATE manifest SET anchor = ?, chksum = ? WHERE anchor = ?"
 
         if not self.item_exists(item):
             sql = f"INSERT INTO manifest ({self.columns}) VALUES (?, ?)"
-        self.query(sql, (item[0], item[1], item[0]))
+            values.pop()
+        self.query(sql, values)
 
         return True
