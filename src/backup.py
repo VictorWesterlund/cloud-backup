@@ -16,7 +16,7 @@ class Backup(FileSystem):
         self.compress = self.db.get_flag("COMPRESS")
 
     # Backup a file or folder
-    def backup_item(self, item: Union[list, str]) -> bool:
+    def backup_item(self, item: Union[list, str], silent: bool = True) -> bool:
         if isinstance(item, str):
             item = self.get_item(item)
 
@@ -54,6 +54,10 @@ class Backup(FileSystem):
         # Remove temp zip
         if self.compress:
             FileSystem.delete(blob)
+
+        if not silent and not self.has_change:
+            print("✓ | Up to date. No changes found")
+        
         return
 
     # Scan TARGET_FOLDER for files and folders to back up
