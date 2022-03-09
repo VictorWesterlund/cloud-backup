@@ -35,5 +35,5 @@ class StorageClient:
             return True
         except Exception as e:
             if e.response.status_code == 403:
-                self.error = "Account lacks 'storage.objects.create' permissions on this bucket "
+                self.error = "GCS: Forbidden: Account lacks 'storage.objects.create' role on target bucket"
             return False

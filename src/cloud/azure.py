@@ -27,5 +27,5 @@ class StorageClient:
 			return True
 		except Exception as e:
 			if e.response.status_code == 403:
-				self.error = "Account lacks 'storage.objects.create' permissions on this bucket "
+				self.error = "Azure: Access key invalid or lacking required permissions"
 			return False
