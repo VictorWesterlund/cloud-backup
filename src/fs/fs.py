@@ -26,7 +26,8 @@ class FileSystem:
 
     @staticmethod
     def zip(item) -> str:
-        dest = f"{tempfile.gettempdir()}/{str(item[1])}"
+        name = FileSystem.chksum(item[0])
+        dest = f"{tempfile.gettempdir()}/{name}"
 
         # Make a temp zip file of single file or folder
         if file_exists(item[0]):

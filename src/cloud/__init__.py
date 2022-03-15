@@ -8,6 +8,8 @@ class Storage:
         self._service = None
         self.service = os.getenv("SERVICE_NAME")
 
+        self.error = None
+
     @property
     def service(self):
         return self._service
@@ -27,4 +29,7 @@ class Storage:
         return values
 
     def upload(self, *argv):
-        return self.service.upload(*argv)
+        upload = self.service.upload(*argv)
+        self.error = self.service.error
+        
+        return upload
