@@ -6,7 +6,7 @@ install python-dotenv
 
 # Install Python libraries for cloud provider
 case $1 in
-	"gcs")
+	"gcloud")
 		install google-cloud-storage 
 		;;
 
