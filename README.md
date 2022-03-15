@@ -20,6 +20,10 @@ git clone https://github.com/VictorWesterlund/cloud-backup
 
 2. **Install dependencies**
 ```bash
+# Install dependencies for your cloud provider "gcloud", "aws" or "azure". Leaving it empty will install everything
+bash install.sh aws
+
+# Or install everything directly with PIP
 python3 -m pip install -r requirements.txt
 ```
 
